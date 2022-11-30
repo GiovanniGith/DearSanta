@@ -1,0 +1,145 @@
+USE [master]
+GO
+
+IF db_id('DearSanta') IS NULL
+  CREATE DATABASE DearSanta
+GO
+
+USE [DearSanta]
+GO
+
+DROP TABLE IF EXISTS [User];
+DROP TABLE IF EXISTS [Family];
+DROP TABLE IF EXISTS [FamilyMember];
+DROP TABLE IF EXISTS [FamilyMemberWishlist];
+DROP TABLE IF EXISTS [WishListItem];
+
+GO 
+
+--varchar or nvarchar?
+CREATE TABLE [User] (
+  [UserId] INTEGER IDENTITY PRIMARY KEY NOT NULL,
+  [FirebaseUserId] VARCHAR(28) NOT NULL,
+  [UserName] VARCHAR(50) NOT NULL,
+  [UserEmail] VARCHAR(255) NOT NULL,
+  [FamilyId] INTEGER NOT NULL,
+  [IsAdmin] BIT NOT NULL,
+
+
+  CONSTRAINT UQ_FirebaseUserId UNIQUE(FirebaseUserId)
+)
+
+CREATE TABLE [Family] (
+	[FamilyId] INTEGER IDENTITY PRIMARY KEY NOT NULL,
+	[FamilyName] VARCHAR(50) NOT NULL	
+)
+CREATE TABLE [WishListItem] (
+	[WishListItemId] INTEGER IDENTITY PRIMARY KEY NOT NULL,
+	[ItemName] VARCHAR(75) NOT NULL,
+	[ItemDescription] VARCHAR(75) NOT NULL,
+	[ItemPrice] INTEGER NOT NULL,
+	[ItemImage] VARCHAR(255) NOT NULL,
+	[IsTopItem] BIT NOT NULL,
+	[IsPurchased] BIT NOT NULL
+	)
+
+CREATE TABLE [FamilyMember] (
+	[FamilyMemberId] INTEGER IDENTITY PRIMARY KEY NOT NULL,
+	[FamilyId] INTEGER NOT NULL,
+	[FamilyMemberName] VARCHAR(50) NOT NULL,
+	[FamilyMemberAge] VARCHAR(50) NOT NULL,
+	[FamilyMemberGender] VARCHAR(50) NOT NULL,
+	
+
+	CONSTRAINT FK_FamilyMember_Family FOREIGN KEY (FamilyId) REFERENCES [Family](FamilyId),
+	
+)
+
+CREATE TABLE [FamilyMemberWishList] (
+	[Id] INTEGER IDENTITY PRIMARY KEY NOT NULL,
+	[FamilyMemberId] INTEGER NOT NULL,
+	[WishListItemId] INTEGER NOT NULL
+	
+
+	CONSTRAINT FK_FamilyMemberWishList_FamilyMember FOREIGN KEY (FamilyMemberId) REFERENCES [FamilyMember](FamilyMemberId),
+	CONSTRAINT FK_FamilyMemberWishList_WishListItem FOREIGN KEY (WishListItemId) REFERENCES [WishListItem](WishListItemId)
+)
+
+
+GO
+
+
+SET IDENTITY_INSERT [User] ON
+INSERT INTO [User]
+  ([UserId], [FirebaseUserId], [UserName], [UserEmail], [FamilyId], [IsAdmin])
+VALUES 
+  (1, 'RIJksXYmLdPHeLXeuCBGgt2ti1x2', 'Johnny ', 'j2t@gmail.com', 2,1), 
+  (2,  'XfG5pOK5iCdEKFVvlA8FCqLmuj73', 'Pete F ', 'SandGang@gmail.com', 1, 0)
+
+SET IDENTITY_INSERT [User] OFF
+
+
+SET IDENTITY_INSERT [Family] ON
+INSERT INTO [Family] 
+	([FamilyId], [FamilyName])
+VALUES
+	(1, 'Flyers'),
+	(2, 'Robinson'),
+	(3,'McQueens'),
+	(4,'BigTymer');
+SET IDENTITY_INSERT [Family] OFF
+
+
+SET IDENTITY_INSERT [FamilyMember] ON
+INSERT INTO [FamilyMember] 
+	([FamilyMemberId], [FamilyMemberName], [FamilyMemberAge], [FamilyMemberGender],[FamilyId])
+VALUES
+	(1, 'Estela', 37,'Female', 1),
+	(2, 'Gabriella',11,'Female',1),
+	(3, 'Ezekiel',8,'Male',1),
+	(4, 'Edgar',35,'Male',2),
+	(5, 'Maria',33,'Female',2),
+	(6, 'Esmeralda',7,'Female',2),
+	(7, 'Aurelio',3,'Male',2),
+	(8, 'Alayna',4,'Female',3),
+	(9, 'Deisy',31,'Female',4);
+SET IDENTITY_INSERT [FamilyMember] OFF
+
+SET IDENTITY_INSERT [WishListItem] ON
+INSERT INTO [WishListItem]
+	([WishListItemId],[ItemName],[ItemDescription], [ItemPrice], [ItemImage],[IsTopItem],[IsPurchased])
+VALUES
+	(1, 'Bowling Ball', 'Size 12- preferably Maize and Blue in Color', 45 , 'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(2, 'Jungle Gym', 'Fit in a 10x10', 450 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(3, 'Jack In the Box','Non-Scary Clown prefered', 22 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(4, 'Connect Four', '', 45 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(5, '2 Front Teeth', '', 10000 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+    (6, 'Socks', 'Any size, shape, or color', 3 , 'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(7, 'Soccer Ball', 'Size 6', 24 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(8, 'Horse','Living Organism Prefered', 22000 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',1, 0),
+	(9, 'Shoes', 'Size 12- You know what they say about big shoes!', 150 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0),
+	(10, 'Hat', 'Something Round for my head', 30 ,'https://tse2.mm.bing.net/th?id=OIP.wnnsQ_etSItpbg3vr7Mx7QHaHa&pid=Api&P=0',0, 0);
+SET IDENTITY_INSERT [WishListItem] OFF
+
+SET IDENTITY_INSERT [FamilyMemberWishList] ON
+INSERT INTO [FamilyMemberWishList]
+	([Id], [FamilyMemberId],[WishListItemId])
+VALUES
+	(1,1,3),
+	(2,1,4),
+	(3,1,5),
+	(4,1,3),
+	(5,2,1),
+	(6,2,5),
+	(7,7,1),
+	(8,8,4),
+	(9,4,4),
+	(10,9,6),
+	(11,6,4),
+	(12,7,5),
+	(13,8,3),
+	(14,5,4),
+	(15,3,5);
+SET IDENTITY_INSERT [FamilyMemberWishList] OFF
+
+
