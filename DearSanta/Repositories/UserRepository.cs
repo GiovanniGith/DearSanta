@@ -56,7 +56,7 @@ namespace DearSanta.Repositories
                     OUTPUT INSERTED.ID
                     VALUES (@FirebaseId, @UserName, @UserEmail, @FamilyId, @IsAdmin);
                 ";
-                    cmd.Parameters.AddWithValue("@firebaseId", user.FirebaseId);
+                    cmd.Parameters.AddWithValue("@firebaseId"," ");
                     cmd.Parameters.AddWithValue("@userName", user.UserName);
                     cmd.Parameters.AddWithValue("@email", user.UserEmail);
                     cmd.Parameters.AddWithValue("@address", user.FamilyId);

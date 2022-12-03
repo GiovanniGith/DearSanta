@@ -8,9 +8,9 @@ namespace DearSanta.Interfaces
 
         public FamilyMember GetFamilyMemberByName(string name);
         public FamilyMember GetFamilyMemberById(int id);
-        public FamilyMember CreateFamilyMember (FamilyMember familyMember);
-        public void UpdateFamilyMember (FamilyMember familyMember);
-        public FamilyMember DeleteFamilyMember (int id);
+        public FamilyMember CreateFamilyMember (FamilyMember newFamMember);
+        public void UpdateFamilyMember (FamilyMember memberUpdate);
+        public void DeleteFamilyMember (int id);
 
     }
 }
