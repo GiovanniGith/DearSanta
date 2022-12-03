@@ -6,11 +6,15 @@ namespace DearSanta.Repositories
 {
     public class FamilyMemberRepository : BaseRepository, IFamilyMember
     {
-        private readonly string _baseSqlSelect = @"SELECT FamilyId,
-                                                          Family Name
+        private readonly string _baseSqlSelect = @"SELECT FamilyMemberId,
+                                                          FamilyMemberName,
+                                                          FamilyMemberAge,
+                                                          FamilyMemberGender,
+                                                          FamilyId
+
                                                    
                                                     
-                                                   FROM [Family]";
+                                                   FROM [FamilyMember]";
 
         public FamilyMemberRepository(IConfiguration config) : base(config) { }
 
@@ -49,8 +53,8 @@ namespace DearSanta.Repositories
                 {
                     cmd.CommandText = @"
                     INSERT INTO [FamilyMember] (FamilyMemberName, FamilyMemberAge, FamilyMemberGender, FamilyId )
-                    OUTPUT INSERTED.ID
-                    VALUES (@FamilyMemberName, @FamilyMemberAge, FamilyMemberGender, FamilyId);
+                    OUTPUT INSERTED.FamilyMemberId
+                    VALUES (@FamilyMemberName, @FamilyMemberAge, @FamilyMemberGender, @FamilyId);
                 ";
                     cmd.Parameters.AddWithValue("FamilyMemberName", newFamMember.FamilyMemberName);
                     cmd.Parameters.AddWithValue("@FamilyMemberAge", newFamMember.FamilyMemberAge);
@@ -80,7 +84,7 @@ namespace DearSanta.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"{_baseSqlSelect} WHERE Id" +
+                    cmd.CommandText = $"{_baseSqlSelect} WHERE FamilyMemberId" +
                         $" = @FamilyMemberId";
 
                     cmd.Parameters.AddWithValue("@FamilyMemberId", id);
@@ -102,35 +106,7 @@ namespace DearSanta.Repositories
 
 
 
-        public FamilyMember? GetFamilyMemberByName(string name)
-
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = $"{_baseSqlSelect} WHERE FamilyMemberName" +
-                        $" = @FamilyMemberName";
-
-                    cmd.Parameters.AddWithValue("@FamilyMemberName", name);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        FamilyMember? result = null;
-                        if (reader.Read())
-                        {
-                            return LoadFromData(reader);
-                        }
-
-                        return result;
-
-                    }
-                }
-            }
-        }
-
+       
 
         public void UpdateFamilyMember(FamilyMember memberUpdate)
         {
@@ -145,7 +121,7 @@ namespace DearSanta.Repositories
                                 FamilyMemberName = @FamilyMemberName,
                                 FamilyMemberAge = @FamilyMemberAge,
                                 FamilyMemberGender = @FamilyMemberGender,
-                                FamilyId = @FamilyId,
+                                FamilyId = @FamilyId
                                
                                 
                             WHERE FamilyMemberId = @FamilyMemberId";
@@ -154,7 +130,7 @@ namespace DearSanta.Repositories
                     cmd.Parameters.AddWithValue("@FamilyMemberAge", memberUpdate.FamilyMemberAge);
                     cmd.Parameters.AddWithValue("@FamilyMemberGender", memberUpdate.FamilyMemberGender);
                     cmd.Parameters.AddWithValue("@FamilyId", memberUpdate.FamilyId);
-
+                    cmd.Parameters.AddWithValue("@FamilyMemberId", memberUpdate.FamilyMemberId);
 
 
                     cmd.ExecuteNonQuery();

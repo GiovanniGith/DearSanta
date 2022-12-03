@@ -6,7 +6,6 @@ namespace DearSanta.Interfaces
     {
         public List <FamilyMember> GetAllFamilyMembers();
 
-        public FamilyMember GetFamilyMemberByName(string name);
         public FamilyMember GetFamilyMemberById(int id);
         public FamilyMember CreateFamilyMember (FamilyMember newFamMember);
         public void UpdateFamilyMember (FamilyMember memberUpdate);

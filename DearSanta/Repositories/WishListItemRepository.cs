@@ -52,8 +52,8 @@ namespace DearSanta.Repositories
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                    INSERT INTO [MealProduct] (ItemName, ItemDescription, ItemPrice, ItemImage,IsTopItem, IsPurchased )
-                    OUTPUT INSERTED.ID
+                    INSERT INTO [WishListItem] (ItemName, ItemDescription, ItemPrice, ItemImage,IsTopItem, IsPurchased )
+                    OUTPUT INSERTED.WishListItemId
                     VALUES (@ItemName, @ItemDescription, @ItemPrice, @ItemImage, @IsTopItem, @IsPurchased);
                 ";
                         cmd.Parameters.AddWithValue("@ItemName", item.ItemName);
@@ -83,10 +83,10 @@ namespace DearSanta.Repositories
 
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = $"{_baseSqlSelect} WHERE Id" +
-                            $" = @id";
+                        cmd.CommandText = $"{_baseSqlSelect} WHERE WishListItemId" +
+                            $" = @WishListItemId";
 
-                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@WishListItemId", id);
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -105,34 +105,6 @@ namespace DearSanta.Repositories
 
 
 
-        public WishListItem? GetWishListItemByName(string name)
-
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = $"{_baseSqlSelect} WHERE ItemName" +
-                        $" = @ItemName";
-
-                    cmd.Parameters.AddWithValue("@ItemName", name);
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        WishListItem? result = null;
-                        if (reader.Read())
-                        {
-                            return LoadFromData(reader);
-                        }
-
-                        return result;
-
-                    }
-                }
-            }
-        }
 
 
         public void UpdateWishListItem(WishListItem item)
@@ -150,7 +122,7 @@ namespace DearSanta.Repositories
                                 ItemPrice = @ItemPrice,
                                 ItemImage = @ItemImage,
                                 IsTopItem = @IsTopItem,
-                                IsPurchased = @IsPurchased,
+                                IsPurchased = @IsPurchased
                                 
                             WHERE WishListItemId = @id";
 
@@ -193,7 +165,7 @@ namespace DearSanta.Repositories
             {
                 return new WishListItem
                 {
-                    WishListItemId = reader.GetInt32(reader.GetOrdinal("Id")),
+                    WishListItemId = reader.GetInt32(reader.GetOrdinal("WishListItemId")),
                     ItemName = reader.GetString(reader.GetOrdinal("ItemName")),
                     ItemDescription = reader.GetString(reader.GetOrdinal("ItemDescription")),
                     ItemPrice = reader.GetInt32(reader.GetOrdinal("ItemPrice")),

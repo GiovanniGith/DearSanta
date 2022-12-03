@@ -47,7 +47,7 @@ CREATE TABLE [FamilyMember] (
 	[FamilyMemberId] INTEGER IDENTITY PRIMARY KEY NOT NULL,
 	[FamilyId] INTEGER NOT NULL,
 	[FamilyMemberName] VARCHAR(50) NOT NULL,
-	[FamilyMemberAge] VARCHAR(50) NOT NULL,
+	[FamilyMemberAge] INT NOT NULL,
 	[FamilyMemberGender] VARCHAR(50) NOT NULL,
 	
 

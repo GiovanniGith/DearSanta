@@ -1,83 +1,68 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DearSanta.Interfaces;
+using DearSanta.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DearSanta.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class FamilyController : Controller
     {
-        // GET: FamilyController
-        public ActionResult Index()
+        private readonly IFamily _familyRepo;
+
+        public FamilyController(IFamily familyRepo)
         {
-            return View();
+            _familyRepo = familyRepo;
         }
 
-        // GET: FamilyController/Details/5
-        public ActionResult Details(int id)
+
+      /*  [HttpGet]
+
+        public List<FamilyMember> GetAllFamilyMembers()
+        {   
+            var familyMembers = new List<FamilyMember>();
+            foreach (var fm in familyMembers)
+            if (fm.FamilyId == fm.FamilyId)
+                {
+                    familyMembers.Add(fm);
+                }
+
+            return familyMembers;
+
+        }
+      */
+
+        [HttpGet]
+        public List<Family> GetAllFamilies()
         {
-            return View();
+            return _familyRepo.GetAllFamilies();
         }
 
-        // GET: FamilyController/Create
-        public ActionResult Create()
+        // GET: api/<FamilyController>
+        [HttpGet("{id}")]
+        public Family GetFamilyById(int id)
         {
-            return View();
+            return _familyRepo.GetFamilyById(id);
         }
 
-        // POST: FamilyController/Create
+
+        // POST api/<FamilyController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public Family CreateFamily(Family fam)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var newFam = _familyRepo.CreateFamily(fam);
+
+            return newFam;
         }
 
-        // GET: FamilyController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<FamilyController>
+        [HttpPut]
+        public void UpdateFamily(Family famUpdate)
         {
-            return View();
+            _familyRepo.UpdateFamily(famUpdate);
         }
 
-        // POST: FamilyController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: FamilyController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: FamilyController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

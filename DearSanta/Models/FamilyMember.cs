@@ -6,9 +6,7 @@
         public string FamilyMemberName { get; set; }
         public int FamilyMemberAge { get; set; }
         public string FamilyMemberGender { get; set; }
-        public int FamilyId { get; set; }
-
-        public List<WishListItem> WishList { get; set; }
+        public int FamilyId { get; set; }     
 
     }
 }

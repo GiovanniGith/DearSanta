@@ -34,13 +34,7 @@ namespace DearSanta.Controllers
 
         }
 
-        // GET api/<WishListItemController>/5
-        [HttpGet("{ItemName}")]
-        public WishListItem GetWishListItemByName(string name)
-        {
-            return _wishListItemRepo.GetWishListItemByName(name);
-
-        }
+   
 
 
         // POST api/<WishListItemController>
@@ -62,7 +56,6 @@ namespace DearSanta.Controllers
         // DELETE api/<WishListItemController>/5
         [HttpDelete("{id}")]
         public void DeleteMealProduct(int id)
-
         {
 
             _wishListItemRepo.DeleteWishListItemById(id);

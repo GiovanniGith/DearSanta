@@ -7,15 +7,17 @@ namespace DearSanta.Repositories
     public class FamilyRepository : BaseRepository, IFamily
     {
         private readonly string _baseSqlSelect = @"SELECT FamilyId,
-                                                          Family Name
+                                                          FamilyName
                                                    
                                                     
                                                    FROM [Family]";
 
         public FamilyRepository(IConfiguration config) : base(config) { }
 
-        public List<FamilyMember> GetAllFamilyMembers()
+        
+        public List<Family> GetAllFamilies()
         {
+
             using (var conn = Connection)
             {
                 conn.Open();
@@ -25,10 +27,10 @@ namespace DearSanta.Repositories
 
                     using (var reader = cmd.ExecuteReader())
                     {
-                        var results = new List<FamilyMember>();
+                        var results = new List<Family>();
                         while (reader.Read())
                         {
-                            var product = LoadFromData2(reader);
+                            var product = LoadFromData(reader);
 
                             results.Add(product);
                         }
@@ -37,7 +39,10 @@ namespace DearSanta.Repositories
                     }
                 }
             }
+
         }
+
+           
 
         public Family CreateFamily(Family newFam)
         {
@@ -49,10 +54,10 @@ namespace DearSanta.Repositories
                 {
                     cmd.CommandText = @"
                     INSERT INTO [Family] (FamilyName)
-                    OUTPUT INSERTED.ID
+                    OUTPUT INSERTED.FamilyId
                     VALUES (@FamilyName);
                 ";
-                    cmd.Parameters.AddWithValue("@ItemName", newFam.FamilyName);
+                    cmd.Parameters.AddWithValue("@FamilyName", newFam.FamilyName);
 
 
 
@@ -76,7 +81,7 @@ namespace DearSanta.Repositories
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = $"{_baseSqlSelect} WHERE Id" +
+                    cmd.CommandText = $"{_baseSqlSelect} WHERE FamilyId" +
                         $" = @FamilyId";
 
                     cmd.Parameters.AddWithValue("@FamilyId", id);
@@ -109,14 +114,16 @@ namespace DearSanta.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            UPDATE WishListItem
+                            UPDATE Family
                             SET
-                                FamilyName = @FamilyName,
+                                FamilyName = @FamilyName
                                
                                 
                             WHERE FamilyId = @FamilyId";
 
+                    cmd.Parameters.AddWithValue("@FamilyId", famUpdate.FamilyId);
                     cmd.Parameters.AddWithValue("@FamilyName", famUpdate.FamilyName);
+                    
 
 
 
@@ -140,20 +147,6 @@ namespace DearSanta.Repositories
 
         }
 
-        private FamilyMember LoadFromData2(SqlDataReader reader)
-        {
-            return new FamilyMember
-            {
-                FamilyMemberId = reader.GetInt32(reader.GetOrdinal("FamilyMemberId")),
-                FamilyMemberName = reader.GetString(reader.GetOrdinal("FamilyMemberName")),
-                FamilyMemberAge = reader.GetInt32(reader.GetOrdinal("FamilyMemberAge")),
-                FamilyMemberGender = reader.GetString(reader.GetOrdinal("FamilyMemberGender")),
-                FamilyId = reader.GetInt32(reader.GetOrdinal("FamilyId")),
-
-
-            };
-
-        }
     }
    }
  

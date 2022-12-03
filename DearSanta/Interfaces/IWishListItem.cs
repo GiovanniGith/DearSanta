@@ -8,7 +8,6 @@ namespace DearSanta.Interfaces
         public WishListItem CreateWishListItem (WishListItem item);
 
         public WishListItem GetWishListItemById (int id);
-        public WishListItem GetWishListItemByName (string name);
         public void DeleteWishListItemById (int id);
         public void UpdateWishListItem(WishListItem item);
     }
