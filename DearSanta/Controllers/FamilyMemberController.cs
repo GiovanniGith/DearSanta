@@ -31,6 +31,14 @@ namespace DearSanta.Controllers
             return _familyMemberRepo.GetFamilyMemberById(id);
         }
 
+        [HttpGet("GetWishListByFamilyMemberId/{id}")]
+        public ActionResult GetWishListByFamilyMemberId (int id)
+        {
+            var fm = _familyMemberRepo.GetWishListByFamilyMemberId(id);
+            return Ok(fm);
+        }
+        
+
 
 
         // POST api/<FamilyMemberController>

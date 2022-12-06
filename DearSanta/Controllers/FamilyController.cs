@@ -17,21 +17,13 @@ namespace DearSanta.Controllers
         }
 
 
-      /*  [HttpGet]
-
-        public List<FamilyMember> GetAllFamilyMembers()
-        {   
-            var familyMembers = new List<FamilyMember>();
-            foreach (var fm in familyMembers)
-            if (fm.FamilyId == fm.FamilyId)
-                {
-                    familyMembers.Add(fm);
-                }
-
-            return familyMembers;
-
+        [HttpGet("GetMembersInAFamilyByFamilyId/{id}")]
+        public ActionResult GetMembersInAFamilyByFamilyId(int id)
+        {
+            var fm = _familyRepo.GetMembersInAFamilyByFamilyId(id);
+            return Ok(fm);
         }
-      */
+        
 
         [HttpGet]
         public List<Family> GetAllFamilies()

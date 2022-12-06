@@ -162,6 +162,40 @@ namespace DearSanta.Repositories
 
 
 
+        public List<FamilyMemberWishList>? GetWishListByFamilyMemberId(int id)
+
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @$"SELECT fml.id, fm.FamilyMemberId, fm.FamilyMemberName, fm.FamilyMemberAge, fm.FamilyMemberGender,wi.WishListItemId,wi.ItemName, wi.ItemDescription,wi.ItemPrice,wi.ItemImage,wi.IsTopItem,wi.IsPurchased from ((FamilyMemberWishList fml 
+Join WishListItem wi ON  fml.WishListItemId = wi.WishListItemId)
+Join FamilyMember fm ON fml.FamilyMemberId = fm.FamilyMemberId)
+                                         WHERE fm.FamilyMemberId = @FamilyMemberId";
+
+                    cmd.Parameters.AddWithValue("@FamilyMemberId", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<FamilyMemberWishList>? newWishList = new List<FamilyMemberWishList>();
+                        while (reader.Read())
+                        {
+                            FamilyMemberWishList newItem = LoadFromData2(reader);
+
+                            newWishList.Add(newItem);
+                        }
+
+                        return newWishList;
+                    }
+                }
+            }
+        }
+
+
+
         private FamilyMember LoadFromData(SqlDataReader reader)
         {
             return new FamilyMember
@@ -175,6 +209,24 @@ namespace DearSanta.Repositories
 
             };
 
+        }
+        private FamilyMemberWishList LoadFromData2(SqlDataReader reader)
+        {
+            return new FamilyMemberWishList
+            {
+                Id= reader.GetInt32(reader.GetOrdinal("Id")),
+                FamilyMemberId = reader.GetInt32(reader.GetOrdinal("FamilyMemberId")),
+                FamilyMemberName = reader.GetString(reader.GetOrdinal("FamilyMemberName")),
+                FamilyMemberAge = reader.GetInt32(reader.GetOrdinal("FamilyMemberAge")),
+                FamilyMemberGender = reader.GetString(reader.GetOrdinal("FamilyMemberGender")),
+                WishListItemId = reader.GetInt32(reader.GetOrdinal("WishListItemId")),
+                ItemName = reader.GetString(reader.GetOrdinal("ItemName")),
+                ItemDescription = reader.GetString(reader.GetOrdinal("ItemDescription")),
+                ItemPrice = reader.GetInt32(reader.GetOrdinal("ItemPrice")),
+                ItemImage = reader.GetString(reader.GetOrdinal("ItemImage")),
+                IsTopItem = reader.GetBoolean(reader.GetOrdinal("IsTopItem")),
+                IsPurchased = reader.GetBoolean(reader.GetOrdinal("IsPurchased"))
+            };
         }
     }
 }
