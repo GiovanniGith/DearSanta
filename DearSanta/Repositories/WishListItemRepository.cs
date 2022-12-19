@@ -43,7 +43,7 @@ namespace DearSanta.Repositories
                 }
             }
 
-            public WishListItem CreateWishListItem(WishListItem item)
+            public WishListItem CreateWishListItem(WishListItem item , int FamilyMemberId)
             {
                 using (SqlConnection conn = Connection)
                 {
@@ -52,20 +52,23 @@ namespace DearSanta.Repositories
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
-                    INSERT INTO [WishListItem] (ItemName, ItemDescription, ItemPrice, ItemImage,IsTopItem, IsPurchased )
-                    OUTPUT INSERTED.WishListItemId
-                    VALUES (@ItemName, @ItemDescription, @ItemPrice, @ItemImage, @IsTopItem, @IsPurchased);
-                ";
+                            INSERT INTO [WishListItem] (ItemName, ItemDescription, ItemPrice, ItemImage,IsTopItem, IsPurchased )
+                            OUTPUT INSERTED.WishListItemId
+                            VALUES (@ItemName, @ItemDescription, @ItemPrice, @ItemImage, @IsTopItem, @IsPurchased);
+                        ";
                         cmd.Parameters.AddWithValue("@ItemName", item.ItemName);
                         cmd.Parameters.AddWithValue("@ItemDescription", item.ItemDescription);
                         cmd.Parameters.AddWithValue("@ItemPrice", item.ItemPrice);
                         cmd.Parameters.AddWithValue("@ItemImage", item.ItemImage);
                         cmd.Parameters.AddWithValue("@IsTopItem", item.IsTopItem);
-                        cmd.Parameters.AddWithValue("@IsPurchased", item.IsPurchased);                        
+                        cmd.Parameters.AddWithValue("@IsPurchased", item.IsPurchased);
+                        cmd.Parameters.AddWithValue("@FamilyMemberid", FamilyMemberId);
 
                         int id = (int)cmd.ExecuteScalar();
 
                         item.WishListItemId = id;
+
+                        AddWishListItemToJoinTable(id, FamilyMemberId);
 
                         return item;
 
@@ -73,8 +76,29 @@ namespace DearSanta.Repositories
                 }
             }
 
+        public void AddWishListItemToJoinTable(int WishListItemId, int FamilyMemberId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
 
-            public WishListItem? GetWishListItemById(int id)
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO [FamilyMemberWishList] (FamilyMemberId, WishListItemId)
+                        OUTPUT INSERTED.Id
+                        VALUES (@FamilyMemberId, @WishListItemId);
+                    ";
+                    cmd.Parameters.AddWithValue("@WishListItemId", WishListItemId);
+                    cmd.Parameters.AddWithValue("@FamilyMemberid", FamilyMemberId);
+
+                    cmd.ExecuteScalar();
+                }
+            }
+        }
+
+
+        public WishListItem? GetWishListItemById(int id)
 
             {
                 using (SqlConnection conn = Connection)
@@ -107,14 +131,14 @@ namespace DearSanta.Repositories
 
 
 
-        public void UpdateWishListItem(WishListItem item)
+        public WishListItem UpdateWishListItem(WishListItem item)
             {
                 using (SqlConnection conn = Connection)
                 {
                     conn.Open();
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"
+                    cmd.CommandText = @"
                             UPDATE WishListItem
                             SET
                                 ItemName = @ItemName,
@@ -136,6 +160,7 @@ namespace DearSanta.Repositories
 
                         cmd.ExecuteNonQuery();
 
+                    return item;
 
                     }
                 }
@@ -150,6 +175,9 @@ namespace DearSanta.Repositories
                     using (SqlCommand cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = @"
+                            DELETE FROM FamilyMemberWishList
+                            WHERE WishListItemId = @id
+
                             DELETE FROM WishListItem
                             WHERE WishListItemId = @id
                         ";

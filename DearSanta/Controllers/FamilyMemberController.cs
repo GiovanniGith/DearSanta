@@ -50,11 +50,13 @@ namespace DearSanta.Controllers
             return newMember;
         }
 
-        // PUT api/<FamilyController>
+        // PUT api/<FamilyMemberController>
         [HttpPut]
-        public void UpdateFamilyMember(FamilyMember memberUpdate)
+        public FamilyMember UpdateFamilyMember(FamilyMember memberUpdate)
         {
-            _familyMemberRepo.UpdateFamilyMember(memberUpdate);
+           var updatedMember = _familyMemberRepo.UpdateFamilyMember(memberUpdate);
+
+            return updatedMember;
         }
 
 

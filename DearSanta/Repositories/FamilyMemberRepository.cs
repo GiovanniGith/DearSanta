@@ -54,22 +54,43 @@ namespace DearSanta.Repositories
                     cmd.CommandText = @"
                     INSERT INTO [FamilyMember] (FamilyMemberName, FamilyMemberAge, FamilyMemberGender, FamilyId )
                     OUTPUT INSERTED.FamilyMemberId
-                    VALUES (@FamilyMemberName, @FamilyMemberAge, @FamilyMemberGender, @FamilyId);
-                ";
-                    cmd.Parameters.AddWithValue("FamilyMemberName", newFamMember.FamilyMemberName);
+                    VALUES (@FamilyMemberName, @FamilyMemberAge, @FamilyMemberGender, @FamilyId)";
+
+                    cmd.Parameters.AddWithValue("@FamilyMemberId", newFamMember.FamilyMemberId);
+                    cmd.Parameters.AddWithValue("@FamilyMemberName", newFamMember.FamilyMemberName);
                     cmd.Parameters.AddWithValue("@FamilyMemberAge", newFamMember.FamilyMemberAge);
                     cmd.Parameters.AddWithValue("@FamilyMemberGender", newFamMember.FamilyMemberGender);
                     cmd.Parameters.AddWithValue("@FamilyId", newFamMember.FamilyId);
-                  
-
-
 
                     int id = (int)cmd.ExecuteScalar();
 
                     newFamMember.FamilyMemberId = id;
 
+                    AddFamilyMemberToFamily(newFamMember.FamilyId, newFamMember.FamilyMemberId);
+
                     return newFamMember;
 
+                }
+            }
+        }
+
+        public void AddFamilyMemberToFamily(int familyId, int familyMemberId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO [MembersInAFamily] (FamilyId, FamilyMemberId)
+                    OUTPUT INSERTED.Id
+                    VALUES (@FamilyId, @FamilyMemberId)";
+
+                    cmd.Parameters.AddWithValue("@FamilyMemberId", familyMemberId);
+                    cmd.Parameters.AddWithValue("@FamilyId", familyId);
+
+                    int id = (int)cmd.ExecuteScalar();
                 }
             }
         }
@@ -108,7 +129,7 @@ namespace DearSanta.Repositories
 
        
 
-        public void UpdateFamilyMember(FamilyMember memberUpdate)
+        public FamilyMember UpdateFamilyMember(FamilyMember memberUpdate)
         {
             using (SqlConnection conn = Connection)
             {
@@ -135,7 +156,7 @@ namespace DearSanta.Repositories
 
                     cmd.ExecuteNonQuery();
 
-
+                    return memberUpdate;
                 }
             }
         }
@@ -149,6 +170,12 @@ namespace DearSanta.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
+                            DELETE FROM MembersInAFamily
+                            WHERE FamilyMemberId = @id
+
+                            DELETE FROM FamilyMemberWishList
+                            WHERE FamilyMemberId = @id
+                            
                             DELETE FROM FamilyMember
                             WHERE FamilyMemberId = @id
                         ";

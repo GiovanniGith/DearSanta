@@ -9,7 +9,7 @@ namespace DearSanta.Interfaces
         public List<FamilyMemberWishList> GetWishListByFamilyMemberId(int id);
         public FamilyMember GetFamilyMemberById(int id);
         public FamilyMember CreateFamilyMember (FamilyMember newFamMember);
-        public void UpdateFamilyMember (FamilyMember memberUpdate);
+        public FamilyMember UpdateFamilyMember (FamilyMember memberUpdate);
         public void DeleteFamilyMember (int id);
 
     }

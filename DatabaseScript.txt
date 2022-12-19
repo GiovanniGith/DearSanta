@@ -73,7 +73,7 @@ CREATE TABLE [MembersInAFamily] (
 	
 
 	CONSTRAINT FK_MembersInAFamily_Family FOREIGN KEY (FamilyId) REFERENCES [Family](FamilyId),
-	CONSTRAINT FK_MembersInAFamily_FamilyMember FOREIGN KEY (FamilyMemberId) [FamilyMember](FamilyMemberId)
+	CONSTRAINT FK_MembersInAFamily_FamilyMember FOREIGN KEY (FamilyMemberId) REFERENCES [FamilyMember](FamilyMemberId)
 )
 
 

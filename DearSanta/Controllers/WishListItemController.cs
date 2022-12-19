@@ -34,23 +34,25 @@ namespace DearSanta.Controllers
 
         }
 
-   
+
 
 
         // POST api/<WishListItemController>
-        [HttpPost]
-        public WishListItem CreateWishListItem(WishListItem item)
+        [HttpPost("CreateWishListItem/{fmId}")]
+        public WishListItem CreateWishListItem([FromBody]WishListItem item, int fmId)
         {
-            var newProduct = _wishListItemRepo.CreateWishListItem(item);
+            var newProduct = _wishListItemRepo.CreateWishListItem(item, fmId);
 
             return newProduct;
         }
 
         // PUT api/<WishListItemController>/5
-        [HttpPut("{id}")]
-        public void UpdateMealProduct(WishListItem item)
+        [HttpPut]
+        public WishListItem UpdateWishListItem(WishListItem item)
         {
-            _wishListItemRepo.UpdateWishListItem(item);
+            var updatedItem = _wishListItemRepo.UpdateWishListItem(item);
+
+            return updatedItem;
         }
 
         // DELETE api/<WishListItemController>/5
